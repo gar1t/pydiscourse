@@ -524,7 +524,7 @@ class DiscourseClient(object):
         """
         return self._get("/new.json", **kwargs)
 
-    def topic(self, slug, topic_id, **kwargs):
+    def topic(self, slug, topic_id=None, **kwargs):
         """
 
         Args:
@@ -535,7 +535,10 @@ class DiscourseClient(object):
         Returns:
 
         """
-        return self._get("/t/{0}/{1}.json".format(slug, topic_id), **kwargs)
+        if topic_id:
+            return self._get("/t/{0}/{1}.json".format(slug, topic_id), **kwargs)
+        else:
+            return self._get("/t/{0}".format(slug), **kwargs)
 
     def delete_topic(self, topic_id, **kwargs):
         """
@@ -551,7 +554,7 @@ class DiscourseClient(object):
         """
         return self._delete(u"/t/{0}".format(topic_id), **kwargs)
 
-    def post(self, topic_id, post_id, **kwargs):
+    def topic_post(self, topic_id, post_id, **kwargs):
         """
 
         Args:
@@ -564,7 +567,7 @@ class DiscourseClient(object):
         """
         return self._get("/t/{0}/{1}.json".format(topic_id, post_id), **kwargs)
 
-    def posts(self, topic_id, post_ids=None, **kwargs):
+    def topic_posts(self, topic_id, post_ids=None, **kwargs):
         """
         Get a set of posts from a topic
 
@@ -628,6 +631,19 @@ class DiscourseClient(object):
         """
         kwargs["title"] = title
         return self._put("{}".format(topic_url), **kwargs)
+
+    def post(self, post_id, **kwargs):
+        """
+
+        Args:
+            topic_id:
+            post_id:
+            **kwargs:
+
+        Returns:
+
+        """
+        return self._get("/posts/{0}.json".format(post_id), **kwargs)
 
     def create_post(
         self, content, category_id=None, topic_id=None, title=None, tags=[], **kwargs
@@ -1367,7 +1383,7 @@ class DiscourseClient(object):
             response = requests.request(
                 verb,
                 url,
-                allow_redirects=False,
+                allow_redirects=True,
                 params=params,
                 files=files,
                 data=data,
